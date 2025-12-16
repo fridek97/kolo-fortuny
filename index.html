@@ -8,9 +8,9 @@
 <style>
 body {
   margin: 0;
+  height: 100vh;
   font-family: Arial, sans-serif;
   background: url("tlo.jpg") center/cover no-repeat;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,9 +19,20 @@ body {
 .container {
   background: rgba(0,0,0,0.6);
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   text-align: center;
   color: white;
+  width: 300px;
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 24px solid red;
+  margin: 0 auto -5px auto;
+  z-index: 10;
 }
 
 .wheel {
@@ -29,23 +40,14 @@ body {
   height: 260px;
   border-radius: 50%;
   border: 8px solid white;
-  margin: 20px auto;
+  margin: 0 auto 15px auto;
   background: conic-gradient(
-    #ffcc00 0deg 90deg,
-    #ff6666 90deg 180deg,
-    #66ccff 180deg 270deg,
-    #99ff99 270deg 360deg
+    red 0deg 90deg,
+    yellow 90deg 180deg,
+    blue 180deg 270deg,
+    green 270deg 360deg
   );
-  transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-}
-
-.pointer {
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 20px solid red;
-  margin: auto;
+  transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 input, button {
@@ -53,11 +55,19 @@ input, button {
   padding: 10px;
   margin-top: 8px;
   font-size: 16px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #00c853;
+  color: black;
+  font-weight: bold;
 }
 
 .result {
-  font-size: 22px;
   margin-top: 15px;
+  font-size: 22px;
 }
 </style>
 </head>
@@ -70,7 +80,7 @@ input, button {
   <div class="pointer"></div>
   <div class="wheel" id="wheel"></div>
 
-  <input id="options" placeholder="Opcje po przecinku (1-sza zawsze wygrywa)">
+  <input id="options" placeholder="Opcje po przecinku">
   <button onclick="spin()">ZAKRĘĆ</button>
 
   <div class="result" id="result"></div>
@@ -81,7 +91,10 @@ let rotation = 0;
 
 function spin() {
   const input = document.getElementById("options").value;
-  if (!input) return;
+  if (!input) {
+    alert("Wpisz opcje!");
+    return;
+  }
 
   const options = input.split(",").map(o => o.trim());
   const segments = options.length;
@@ -91,15 +104,22 @@ function spin() {
 
   const segmentAngle = 360 / segments;
 
-  // środek zwycięskiego segmentu
+  // trafienie w środek zwycięskiego segmentu
   const targetAngle =
     360 - (winningIndex * segmentAngle + segmentAngle / 2);
 
-  // kilka pełnych obrotów + precyzyjne trafienie
-  rotation += 360 * 6 + targetAngle;
+  const wheel = document.getElementById("wheel");
 
-  document.getElementById("wheel").style.transform =
-    `rotate(${rotation}deg)`;
+  // reset animacji
+  wheel.style.transition = "none";
+  wheel.style.transform = `rotate(${rotation % 360}deg)`;
+
+  setTimeout(() => {
+    wheel.style.transition =
+      "transform 4s cubic-bezier(0.25, 1, 0.5, 1)";
+    rotation += 360 * 6 + targetAngle;
+    wheel.style.transform = `rotate(${rotation}deg)`;
+  }, 50);
 
   setTimeout(() => {
     document.getElementById("result").innerText =
