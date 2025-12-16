@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koło Fortuny</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url("tlo.jpg") center/cover no-repeat;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background: rgba(0,0,0,0.6);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+}
+
+.wheel {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  border: 8px solid white;
+  margin: 20px auto;
+  transition: transform 4s cubic-bezier(.17,.67,.83,.67);
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 20px solid red;
+  margin: auto;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.result {
+  font-size: 22px;
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>🎡 Koło Fortuny</h2>
+
+  <div class="pointer"></div>
+  <div class="wheel" id="wheel"></div>
+
+  <input id="options" placeholder="Opcje po przecinku (1-sza zawsze wygrywa)">
+  <button onclick="spin()">ZAKRĘĆ</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+let rotation = 0;
+
+function spin() {
+  const options = document.getElementById("options").value.split(",");
+  if (options.length < 1) return;
+
+  const forcedResult = options[0].trim(); // ZAWSZE 1 OPCJA
+
+  rotation += 360 * 5;
+  document.getElementById("wheel").style.transform =
+    `rotate(${rotation}deg)`;
+
+  setTimeout(() => {
+    document.getElementById("result").innerText =
+      "Wypadło: " + forcedResult;
+  }, 4200);
+}
+</script>
+
+</body>
+</html>
