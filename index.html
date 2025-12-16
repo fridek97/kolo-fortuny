@@ -25,12 +25,18 @@ body {
 }
 
 .wheel {
-  width: 250px;
-  height: 250px;
+  width: 260px;
+  height: 260px;
   border-radius: 50%;
   border: 8px solid white;
   margin: 20px auto;
-  transition: transform 4s cubic-bezier(.17,.67,.83,.67);
+  background: conic-gradient(
+    #ffcc00 0deg 90deg,
+    #ff6666 90deg 180deg,
+    #66ccff 180deg 270deg,
+    #99ff99 270deg 360deg
+  );
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 
 .pointer {
@@ -74,18 +80,30 @@ input, button {
 let rotation = 0;
 
 function spin() {
-  const options = document.getElementById("options").value.split(",");
-  if (options.length < 1) return;
+  const input = document.getElementById("options").value;
+  if (!input) return;
 
-  const forcedResult = options[0].trim(); // ZAWSZE 1 OPCJA
+  const options = input.split(",").map(o => o.trim());
+  const segments = options.length;
 
-  rotation += 360 * 5;
+  // ZAWSZE WYGRYWA PIERWSZA OPCJA
+  const winningIndex = 0;
+
+  const segmentAngle = 360 / segments;
+
+  // środek zwycięskiego segmentu
+  const targetAngle =
+    360 - (winningIndex * segmentAngle + segmentAngle / 2);
+
+  // kilka pełnych obrotów + precyzyjne trafienie
+  rotation += 360 * 6 + targetAngle;
+
   document.getElementById("wheel").style.transform =
     `rotate(${rotation}deg)`;
 
   setTimeout(() => {
     document.getElementById("result").innerText =
-      "Wypadło: " + forcedResult;
+      "Wypadło: " + options[0];
   }, 4200);
 }
 </script>
