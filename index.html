@@ -159,9 +159,8 @@ function spin() {
   const segmentAngle = 360 / options.length;
 
   // 👉 OSZUSTWO: zawsze 1 opcja
-  const winningIndex = 0;
   const target =
-    360 - (winningIndex * segmentAngle + segmentAngle / 2);
+  360 - (winningIndex * segmentAngle + segmentAngle / 2) - 90;
 
   const wheel = document.getElementById("wheel");
 
